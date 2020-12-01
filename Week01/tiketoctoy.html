@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="zh-hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Test</title>
+    <!--    <link rel="stylesheet" href="./normaliza.css">-->
+    <style>
+        body {
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        #board {
+            display: inline-block;
+        }
+
+        .panelItem {
+            display: inline-block;
+            box-sizing: border-box;
+            border: 1px solid #FFFFFF;
+            background: gray;
+            height: 100px;
+            margin-bottom: 0px;
+            width: 100px;
+            border-radius: 5px;
+
+            font-size: 50px;
+            line-height: 100px;
+            vertical-align: middle;
+            text-align: center;
+        }
+        #resetBtn {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="board"></div>
+<h2 id="winnerWord"></h2>
+
+<script>
+
+    // 1:⭕️  2:❌
+    let whoPlay = 1
+
+    const panelRowNumber = Number(prompt('请输入画板大小：(只能输入数字, 不输入直接回车默认为3)')) || 3
+    const board = document.getElementById('board')
+    const panel = drawPanel(panelRowNumber)
+
+    const render = (event) => {
+
+        for (let i = 0; i < panel.length; i++) {
+            for (let j = 0; j < panel[i].length; j++) {
+                const panelItem = document.createElement('div')
+                panelItem.setAttribute('class', 'panelItem')
+                board.appendChild(panelItem)
+            }
+        }
+
+        board.addEventListener("click", event)
+    }
+
+    function drawPanel (num) {
+        function createItem (num) {
+            let item = []
+            for (let i = 0; i < num; i++) {
+                item.push(0)
+            }
+            return item
+        }
+
+        let panel = []
+        for (let i = 0; i < num; i++) {
+            panel.push(createItem(num))
+        }
+
+        board.style.width = num * 100 + "px"
+
+        return panel
+    }
+
+    const haveClicked = (row, column) => {
+        return Boolean(panel[row][column])
+    }
+
+    const computedDrawWhat = () => {
+        return whoPlay === 1 ? '⭕️' : '❌'
+    }
+    const computedWriteWhatData = () => {
+        return whoPlay
+    }
+
+    const drawPiece = (index, list) => {
+        return list[index].innerText = computedDrawWhat()
+    }
+
+    const writePanelData = (row, column) => {
+        return panel[row][column] = computedWriteWhatData()
+    }
+
+    const concatArray = (list) => {
+        return list.reduce((first, curr) => first.concat(curr), [])
+    }
+
+    const reverseArray = (list) => {
+        let temp = JSON.parse(JSON.stringify(list))
+        return temp.reverse()
+    }
+
+    // 横相等
+    const check1 = (num, list) => {
+
+        let result = false
+        let currentList = concatArray(list)
+
+        let temp
+        let time = num - 1
+        let loopTime = num
+        for (let i = 0; i < currentList.length; i++) {
+            if (!temp) {
+                temp = currentList[i]
+            } else {
+                if (temp === currentList[i]) {
+                    time--
+                    if (time === 0) {
+                        result = true
+                        break;
+                    }
+                } else {
+                    temp = currentList[i]
+                    time = num - 1
+                }
+            }
+            loopTime--
+            if (loopTime === 0) {
+                loopTime = num
+                temp = null
+                time = num - 1
+            }
+        }
+
+        return result
+
+    }
+    // 竖相等
+    const check2 = (num, list) => {
+
+        let result = false
+        let currentList = concatArray(list)
+
+        let temp
+        for (let i = 0; i < num; i++) {
+
+            temp = currentList[i]
+            if (temp === 0) continue;
+            let index = i
+            let goodTime = 0
+            let time = num - 1
+            while (time > 0) {
+                index += num
+                if (temp === currentList[index]) {
+                    goodTime++
+                    if (goodTime === (num - 1)) {
+                        result = true;
+                        break;
+                    }
+                }
+                time--
+            }
+            if (result) break;
+        }
+        return result
+
+
+    }
+    // 斜相等
+    const check3 = (num, list) => {
+
+        let currentList = concatArray(list)
+        let reverseList = reverseArray(list)
+        let reverseCurrentList = concatArray(reverseList)
+
+        function foo(num, list) {
+            let result = false
+            let temp
+            temp = list[0]
+            let index = 0
+            let goodTime = 0
+            for (let i = 0; i < num - 1; i++) {
+
+                if (temp === 0) break;
+                index += num + 1
+
+                if (temp === list[index]) {
+                    goodTime++
+                    if (goodTime === num - 1) {
+                        result = true
+                    }
+                }
+
+            }
+            return result
+        }
+
+        return foo(num, currentList) || foo(num, reverseCurrentList)
+
+    }
+
+    const checkWhoWinner = (num, list) => {
+
+        let result;
+
+        result = check3(num, list) || check2(num, list) || check1(num, list)
+
+        return result
+
+    }
+
+
+    const clickEvent = event => {
+        const {childNodes} = event.target.parentNode;
+        const childList = Object.values(childNodes)
+        const currentIndex = childList.indexOf(event.target)
+        const row = Math.floor(currentIndex / panelRowNumber)
+        const column = currentIndex % panelRowNumber
+
+        if (haveClicked(row, column)) return
+        drawPiece(currentIndex, childList)
+        writePanelData(row, column)
+        whoPlay = whoPlay === 1 ? 2 : 1;
+        const result = checkWhoWinner(panelRowNumber, panel)
+
+        if (result) {
+            const winnerWord = document.getElementById('winnerWord')
+            winnerWord.innerText = "恭喜您获胜了！"
+            const resetBtn = document.createElement('button')
+            resetBtn.setAttribute('id', 'resetBtn')
+            resetBtn.innerText = "重新玩"
+            resetBtn.addEventListener('click', () => {
+                window.location.reload()
+            })
+            const parentDom = winnerWord.parentNode
+            parentDom.insertBefore(resetBtn, winnerWord)
+        }
+    }
+
+    render(clickEvent)
+
+</script>
+</body>
+</html>
