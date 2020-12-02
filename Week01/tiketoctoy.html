@@ -36,6 +36,7 @@
             vertical-align: middle;
             text-align: center;
         }
+
         #resetBtn {
             margin-top: 20px;
         }
@@ -68,8 +69,8 @@
         board.addEventListener("click", event)
     }
 
-    function drawPanel (num) {
-        function createItem (num) {
+    function drawPanel(num) {
+        function createItem(num) {
             let item = []
             for (let i = 0; i < num; i++) {
                 item.push(0)
@@ -110,9 +111,69 @@
         return list.reduce((first, curr) => first.concat(curr), [])
     }
 
+    const clone = (list) => {
+        return JSON.parse(JSON.stringify(list))
+    }
+
     const reverseArray = (list) => {
-        let temp = JSON.parse(JSON.stringify(list))
+        const temp = clone(list)
         return temp.reverse()
+    }
+
+    const willWin = (num, list) => {
+        let fakePlay = whoPlay
+        let result = false
+        let p
+
+        for (let i = 0; i < num; i++) {
+            for (let j = 0; j < num; j++) {
+                const cloneList = clone(list)
+                if (cloneList[i][j])
+                    continue
+                cloneList[i][j] = fakePlay
+                if (checkWhoWinner(num, cloneList)) {
+                    p = [i, j]
+                    result = true
+                    break;
+                }
+            }
+            if (result) break;
+        }
+        return {result, p}
+    }
+
+    const bestChoice = (num, list, play) => {
+        let hasWillWin = willWin(num, list)
+        if (hasWillWin.result) {
+            return {
+                point: hasWillWin.p,
+                result: 1
+            }
+        }
+
+        let result = -2
+        let point = null
+        for (let i = 0; i < num; i++) {
+            for (let j = 0; j < num; j++) {
+                if (list[i][j])
+                    continue
+
+                let temp = clone(list)
+                temp[i][j] = play
+                let r = bestChoice(num, temp, 3 - play).result
+
+                if(r === 1) {
+                    result = -r;
+                    point = [j, i]
+                }
+
+            }
+        }
+        return {
+            point,
+            result: point ? result : 0
+        }
+
     }
 
     // 横相等
@@ -224,6 +285,21 @@
 
     }
 
+    const GameOver = () => {
+        const winnerWord = document.getElementById('winnerWord')
+        winnerWord.innerText = "恭喜您获胜了！"
+        const resetBtn = document.createElement('button')
+        resetBtn.setAttribute('id', 'resetBtn')
+        resetBtn.innerText = "重新玩"
+        resetBtn.addEventListener('click', () => {
+            window.location.reload()
+        })
+        const parentDom = winnerWord.parentNode
+        parentDom.insertBefore(resetBtn, winnerWord)
+
+        board.removeEventListener('click', clickEvent)
+    }
+
 
     const clickEvent = event => {
         const {childNodes} = event.target.parentNode;
@@ -237,19 +313,14 @@
         writePanelData(row, column)
         whoPlay = whoPlay === 1 ? 2 : 1;
         const result = checkWhoWinner(panelRowNumber, panel)
-
-        if (result) {
-            const winnerWord = document.getElementById('winnerWord')
-            winnerWord.innerText = "恭喜您获胜了！"
-            const resetBtn = document.createElement('button')
-            resetBtn.setAttribute('id', 'resetBtn')
-            resetBtn.innerText = "重新玩"
-            resetBtn.addEventListener('click', () => {
-                window.location.reload()
-            })
-            const parentDom = winnerWord.parentNode
-            parentDom.insertBefore(resetBtn, winnerWord)
+        if (willWin(panelRowNumber, panel).result) {
+            console.log(whoPlay + " will Win!")
         }
+
+        console.log(bestChoice(panelRowNumber, panel, whoPlay))
+
+
+        result && GameOver()
     }
 
     render(clickEvent)
