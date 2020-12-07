@@ -41,7 +41,7 @@
                 cell.style.background = 'rgb(213, 213, 213)'
                 if (mapList[100 * y + x] === 0) {
                     cell.style.background = 'rgb(213, 213, 213)'
-                } else {
+                } else if (mapList[100 * y + x] === 1) {
                     cell.style.background = 'black'
                 }
                 cell.setAttribute('class', 'cell')
