@@ -1,14 +1,121 @@
 <html lang="zh-hans">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-</head>
-<body>
-    
+    <style>
+        #map {
+            width: 1200px;
+        }
 
-<script>
-    
-</script>
+        .cell {
+            display: inline-block;
+            line-height: 10px;
+            vertical-align: middle;
+            height: 10px;
+            width: 10px;
+            margin: 1px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="map"></div>
+    <button onclick="localStorage['map'] = JSON.stringify(mapList)">Save</button>
+    <button onclick="localStorage['map'] = JSON.stringify(new Array(10000).fill(0)); window.location.reload()">clear
+        map</button>
+
+    <script>
+        const map = document.getElementById('map')
+
+        let mapList = localStorage['map'] ? JSON.parse(localStorage['map']) : new Array(10000).fill(0)
+
+        localStorage['map'] || localStorage.setItem('map', JSON.stringify(mapList))
+
+        for (let y = 0; y < 100; y++) {
+            for (let x = 0; x < 100; x++) {
+
+                const cell = document.createElement('div')
+                cell.style.background = 'rgb(213, 213, 213)'
+                if (mapList[100 * y + x] === 0) {
+                    cell.style.background = 'rgb(213, 213, 213)'
+                } else {
+                    cell.style.background = 'black'
+                }
+                cell.setAttribute('class', 'cell')
+
+
+                cell.addEventListener('mousemove', () => {
+                    if (mousedown) {
+                        if (clear) {
+                            cell.style.background = 'rgb(213, 213, 213)'
+                            mapList[100 * y + x] = 0
+                        } else {
+                            cell.style.background = "black"
+                            if (mapList[100 * y + x] === 0) {
+                                mapList[100 * y + x] = 1
+                            }
+                        }
+                    }
+                })
+
+                map.appendChild(cell)
+            }
+        }
+
+        let mousedown = false
+        let clear = false
+        document.addEventListener('mousedown', e => {
+            mousedown = true
+            clear = e.which === 3
+        })
+        document.addEventListener('mouseup', () => {
+            mousedown = false
+        })
+        document.addEventListener('contextmenu', e => e.preventDefault())
+
+
+        function path(map, start, end) {
+
+            // 将所有的有可能走到的坐标放在这里
+            let queue = [start]
+
+            function insert([x, y]) {
+
+                if (x < 0 || x > 100 || y > 100 || y < 0) {
+                    return false
+                }
+                if (map[100 * y + x]) {
+                    return
+                }
+
+                map[100 * y + x] = 2
+                queue.push([x, y])
+            }
+
+            while (queue.length) {
+
+                let [x, y] = queue.shift()
+
+                if (x === end[0] && y === end[1]) {
+                    return true
+                }
+
+                console.log(queue);
+
+                insert([x + 1, y])
+                insert([x - 1, y])
+                insert([x, y + 1])
+                insert([x, y - 1])
+
+            }
+
+            return false
+        }
+
+    </script>
 </body>
+
 </html>
