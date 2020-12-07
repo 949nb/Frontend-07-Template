@@ -4,9 +4,7 @@
 
 ### 🦾本周利用业余时间通过课程做了几件事：
 
-1. 写tiktoctoy小游戏
-
-​        🔗[代码链接](https://github.com/949nb/Frontend-07-Template/blob/main/Week01/tiketoctoy.html)
+1. 写tiktoctoy小游戏 🔗[代码链接](https://github.com/949nb/Frontend-07-Template/blob/main/Week01/tiketoctoy.html)
 
 ​        这个小游戏我写了两遍，第一遍只实现了3子连珠。第二次写了几个小时 大概实现了可以自定义棋盘大小和获胜条件，不过棋盘大小和获胜条件是强相关的。
 
@@ -15,9 +13,7 @@
 
 
 2. 刷leecode
-   1. 双指针
-
-​        📒[笔记链接](https://github.com/949nb/Frontend-07-Template/tree/main/Week01/算法/removeDuplicates.js)
+   1. 双指针  📒[笔记链接](https://github.com/949nb/Frontend-07-Template/tree/main/Week01/算法/removeDuplicates.js)
 
 3. 了解面向对象概念
 
