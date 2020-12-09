@@ -4,12 +4,12 @@ const arr = [0, 9, 2]
  * @return {number[]}
  */
 
-var plusOne = function(digits) {
+var plusOne = function (digits) {
     const len = digits.length;
-    for(let i = len - 1; i >= 0; i--) {
+    for (let i = len - 1; i >= 0; i--) {
         digits[i]++;
         digits[i] %= 10;
-        if(digits[i]!=0)
+        if (digits[i] != 0)
             return digits;
     }
     digits.unshift(1)

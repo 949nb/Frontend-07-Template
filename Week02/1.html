@@ -89,7 +89,7 @@
             async function insert([x, y, pre]) {
 
                 if (x < 0 || x >= 100 || y >= 100 || y < 0) {
-                    return false
+                    return
                 }
                 if (table[100 * y + x]) {
                     return
@@ -108,15 +108,12 @@
 
                 if (x === end[0] && y === end[1]) {
 
-
                     let path = []
                     const mapDom = document.getElementById('map')
 
                     while (x !== start[0] || y !== start[1]) {
                         path.push(table[100 * y + x]);
-                        [x, y] = table[100*y + x];
-                        // x = table[100 * y + x][0]
-                        // y = table[100 * y + x][1]
+                        [x, y] = table[100 * y + x];
                         await sleep(1)
                         mapDom.children[y * 100 + x].style.background = "green"
                     }
