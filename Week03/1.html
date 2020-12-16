@@ -1,0 +1,31 @@
+<html lang="zh-hans">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body>
+		<script>
+			let regexp = /([0-9\.]+)|([ \t]+)|([\n\r]+)|(\*)|(\/)|(\+)|(\-)/g;
+			let dic = ['Number', 'Whitespace', 'LineTerminator', '*', '/', '+', '-'];
+
+			function tokenize(x) {
+                let result;
+
+                while (true) {
+				    result = regexp.exec(x);
+                    if (!result) break;
+                    for (let i = 1; i < dic.length; i++) {
+                        if (result[i]) {
+                            console.log(dic[i - 1]);
+                        }
+                    }
+                    console.log(result)
+                }
+
+			}
+
+			tokenize('1 + 1');
+		</script>
+	</body>
+</html>
