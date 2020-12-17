@@ -42,7 +42,7 @@ let l2 = new ListNode(1, new ListNode(3, new ListNode(4)));
  * @param {ListNode} l2
  * @return {ListNode}
  * 时间复杂度: O(n)
- * 空间复杂度: O(1)
+ * 空间复杂度: O(n)
  * 傻瓜解法，先把链表套到数组里面 然后再合并排序数组，然后按照数组索引连接链表
  */
 var mergeTwoLists2 = function (l1, l2) {
