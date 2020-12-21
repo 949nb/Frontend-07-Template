@@ -3,4 +3,4 @@
 一个可以实时看AST的网站
 https://astexplorer.net
 
-![avatar](./note.png)
+![note](./note.png)
