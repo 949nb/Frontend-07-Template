@@ -23,7 +23,6 @@ function KMP(source, pattern) {
 			}
 		}
 	}
-	console.log(pre_table);
 
 	// 匹配
 	let sIndex = 0;
@@ -49,4 +48,5 @@ function KMP(source, pattern) {
 	console.log(time, source.length, pattern.length);
 	return [source, pre_table];
 }
+
 console.log(KMP('lkasjdflkjasdkfjlaskdfkjabdacccccccebcd', 'ccc'));
