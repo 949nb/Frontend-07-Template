@@ -26,11 +26,11 @@ var reverseList = function(head) {
     listArr.push(curr)
 
     for(let i = 0; i < listArr.length; i++) {
-        if (i === 0) {
+        if (i === 0) 
             listArr[i].next = null
-        } else {
+        else 
             listArr[i].next = listArr[i - 1]
-        }
+        
     }
 
     return listArr[listArr.length - 1]

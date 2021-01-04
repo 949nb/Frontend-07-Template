@@ -26,6 +26,12 @@ var mergeTwoLists = function (l1, l2) {
 			pre = pre.next;
 			l2 = l2.next;
 		}
+
+		// l1.val <= l2.val ? 
+		// 	(pre.next = l1) && ( (pre = pre.next) && (l1 = l1.next)):
+		// 	(pre.next = l2) && (pre = pre.next) && (l2 = l2.next)
+
+
 	}
 
 	pre.next = l1 === null ? l2 : l1;
@@ -46,7 +52,7 @@ let l2 = new ListNode(1, new ListNode(3, new ListNode(4)));
  * 傻瓜解法，先把链表套到数组里面 然后再合并排序数组，然后按照数组索引连接链表
  */
 var mergeTwoLists2 = function (l1, l2) {
-    if (!l1 && !l2) return null;
+	if (!l1 && !l2) return null;
 	let l1Arr = [];
 	let l2Arr = [];
 
@@ -66,18 +72,11 @@ var mergeTwoLists2 = function (l1, l2) {
 	resultArr = resultArr.sort((a, b) => a.val - b.val);
 
 	for (let i = 0; i < resultArr.length; i++) {
-        if (i + 1 < resultArr.length) {
-		    resultArr[i].next = resultArr[i + 1];
-        } else {
-		    resultArr[i].next = null
-        }
+		if (i + 1 < resultArr.length) resultArr[i].next = resultArr[i + 1];
+		else resultArr[i].next = null;
 	}
 	return resultArr[0];
 };
-
-
-
-
 
 let result = mergeTwoLists2(l1, l2);
 

@@ -31,3 +31,8 @@ var removeNthFromEnd = function(head, n) {
     
     return head
 };
+
+// 三元：
+// <表达式><?><rusult><:><rusult>
+// rusult:
+// <表达式>
