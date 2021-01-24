@@ -1,33 +1,55 @@
+// reactive的实现
+let reactivties = new Map();
+let callbacks = new Map();
+let usedReactivtives = [];
 let object = {
 	a: 1,
 	b: 2,
 };
 
-effect(() => {
-	console.log(po.a);
-});
-
 function effect(callback) {
-	callbacks.push(callback);
+	usedReactivtives = [];
+	callback();
+
+	for (let reactivty of usedReactivtives) {
+		if (!callbacks.has(reactivty[0])) {
+			callbacks.set(reactivty[0], new Map());
+		}
+		if (!callbacks.get(reactivty[0]).has(reactivty[1])) {
+			callbacks.get(reactivty[0]).set(reactivty[1], []);
+		}
+		callbacks.get(reactivty[0]).get(reactivty[1]).push(callback);
+	}
 }
 
-let po = reactive(object);
-
 function reactive(object) {
-	return new Proxy(object, {
+	if (reactivties.has(object)) return reactivties.get(object);
+
+	let proxy = new Proxy(object, {
 		set(obj, prop, val) {
 			obj[prop] = val;
-			for (let callback of callbacks) {
-				callback();
-			}
-			console.log(obj, prop, val);
+			if (callbacks.get(obj))
+				if (callbacks.get(obj).get(prop))
+					for (let callback of callbacks.get(obj).get(prop)) {
+						callback();
+					}
 			return obj[prop];
 		},
 		get(obj, prop) {
-			console.log(obj, prop);
+			usedReactivtives.push([obj, prop]);
+			if (typeof obj[prop] === 'object') return reactive(obj[prop]);
+
 			return obj[prop];
 		},
 	});
+
+	reactivties.set(object, proxy);
 }
 
-po.a = 4;
+let pop = reactive(object);
+pop.a = 4;
+
+// effect 将pop.a加入响应式对象的key中, 并且规定它的callback。
+effect(() => {
+	console.log(pop.a);
+});
