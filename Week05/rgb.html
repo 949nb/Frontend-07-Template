@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>rgb</title>
+</head>
+<body>
+<input id="r" type="range" min="0" max="255">
+<input id="g" type="range" min="0" max="255">
+<input id="b" type="range" min="0" max="255">
+
+<br>
+
+<div id="temp" style="height: 100px;"></div>
+<script src="j.js"></script>
+<script>
+    let o = {
+        r: '0',
+        g: '0',
+        b: '0'
+    }
+
+    let test = reactive(o)
+
+    effect(() => {
+        document.getElementById('r').value = test.r;
+    })
+
+    effect(() => {
+        document.getElementById('g').value = test.g;
+    })
+
+    effect(() => {
+        document.getElementById('b').value = test.b;
+    })
+
+    document.getElementById('r').addEventListener('input', (e) => {
+        test.r = e.target.value
+    })
+
+    document.getElementById('b').addEventListener('input', (e) => {
+        test.b = e.target.value
+    })
+
+    document.getElementById('g').addEventListener('input', (e) => {
+        test.g = e.target.value
+    })
+
+    effect(() => {
+        document.getElementById('temp').style.backgroundColor = `rgb(${test.r}, ${test.g}, ${test.b})`
+    })
+
+</script>
+</body>
+</html>
